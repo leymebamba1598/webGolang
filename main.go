@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -8,24 +9,20 @@ import (
 func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Nombre", "Valor del header")
-		w.Header().Add("Nombre2", "Valor del header dos")
-		//fmt.Fprintf(w, "Hola mundo")
-
-		//Redireccionar url
-		http.Redirect(w, r, "/dos", http.StatusMovedPermanently)
-
+		fmt.Println("El metodo es ", r.Method)
+		switch r.Method {
+		case "GET":
+			fmt.Fprintf(w, "Hola mundo el metodo es GET")
+		case "POST":
+			fmt.Fprintf(w, "Hola el metodo es POST")
+		case "PUT":
+			fmt.Fprintf(w, "Hola el metodo es PUT")
+		case "DELETE":
+			fmt.Fprintf(w, "Hola el metodo es DELETE")
+		default:
+			http.Error(w, "Metodo no valido", http.StatusBadRequest)
+		}
 	})
-
-	http.HandleFunc("/dos", func(w http.ResponseWriter, r *http.Request) {
-		//fmt.Fprintf(w, "Numero dos")
-		http.NotFound(w, r)
-	})
-
-	http.HandleFunc("/error", func(w http.ResponseWriter, r *http.Request) {
-		http.Error(w, "Este es un error", http.StatusNotFound)
-	})
-
 	//Iniciar un servidor en go
 	err := http.ListenAndServe("localhost:3000", nil)
 	if err != nil {
