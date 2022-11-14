@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -19,8 +18,14 @@ func main() {
 	})
 
 	http.HandleFunc("/dos", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Numero dos")
+		//fmt.Fprintf(w, "Numero dos")
+		http.NotFound(w, r)
 	})
+
+	http.HandleFunc("/error", func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "Este es un error", http.StatusNotFound)
+	})
+
 	//Iniciar un servidor en go
 	err := http.ListenAndServe("localhost:3000", nil)
 	if err != nil {
