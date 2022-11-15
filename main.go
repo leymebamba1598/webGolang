@@ -2,32 +2,24 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
+	"net/url"
 )
 
-func main() {
-
-	http.HandleFunc("/params", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println(r.Header)
-
-		//Leer headers
-		accesToken := r.Header.Get("acces_token")
-		if len(accesToken) != 0 {
-			fmt.Println(accesToken)
-		}
-		//agregar encabezados
-		r.Header.Set("nombre", "didier")
-		fmt.Println(r.Header)
-
-		fmt.Fprintf(w, "Hola mundo")
-
-	})
-
-	//Iniciar un servidor en go
-	err := http.ListenAndServe("localhost:3000", nil)
+func createUrl() string {
+	u, err := url.Parse("/params")
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
+	u.Host = "localhost:3000"
+	u.Scheme = "http"
 
+	query := u.Query() //Nos regresa un mapa
+	query.Add("nombre", "valor")
+
+	u.RawQuery = query.Encode()
+	return u.String()
+}
+func main() {
+	url := createUrl()
+	fmt.Println("La url final es", url)
 }
