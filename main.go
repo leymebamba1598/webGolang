@@ -8,16 +8,21 @@ import (
 
 func main() {
 
-	http.HandleFunc("/url", func(w http.ResponseWriter, r *http.Request) {
-		//fmt.Println(r.URL.RawQuery)//Ver parametros enviados por url
+	http.HandleFunc("/params", func(w http.ResponseWriter, r *http.Request) {
+		//fmt.Println(r.URL.RawQuery) Ver Query completo
+		//fmt.Println(r.URL.Query())  Ver mapa
 
-		fmt.Println(r.URL.Query()) //Retorna un mapa
-		//Obtenemos los datos del mapa
+		fmt.Println(r.URL)
+		values := r.URL.Query()
 
-		name := r.URL.Query().Get("name")
-		if len(name) != 0 {
-			fmt.Println("Nombre", name)
-		}
+		values.Del("otro") //elimina un parametro
+
+		values.Add("name", "Didier")
+		values.Add("curos", "Goweb")
+		values.Add("edad", "24")
+		r.URL.RawQuery = values.Encode()
+
+		fmt.Println(r.URL)
 		fmt.Fprintf(w, "Hola mundo")
 
 	})
