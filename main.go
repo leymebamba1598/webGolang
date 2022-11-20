@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -13,15 +12,14 @@ type User struct {
 	name string
 }
 
-func (this *User) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hola: "+this.name)
-}
-
 func main() {
-	didier := &User{name: "Didier"}
+	redirect := http.RedirectHandler("https://www.facebook.com", http.StatusMovedPermanently)
+	notFound := http.NotFoundHandler()
 
 	mux := http.NewServeMux()
-	mux.Handle("/", didier)
+
+	mux.Handle("/redirect", redirect)
+	mux.Handle("/not", notFound)
 
 	server := &http.Server{
 		Addr:    "localhost:3000",
@@ -29,7 +27,6 @@ func main() {
 	}
 
 	err := server.ListenAndServe()
-
 	if err != nil {
 		log.Fatal("Error", err)
 	}
