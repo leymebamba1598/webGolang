@@ -20,12 +20,17 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userId, _ := strconv.Atoi(vars["id"]) //string
 	//user, err := models.GetUser(userId)
+	response := models.GetDefaultResponse()
 	user, err := models.GetUserSlice(userId)
+
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
+		response.NotFound("usuario no encontrado")
+	} else {
+		response.Data = user
 	}
 
-	output, _ := json.Marshal(&user)
+	output, _ := json.Marshal(&response)
 	fmt.Fprintf(w, string(output))
 }
 
