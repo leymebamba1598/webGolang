@@ -9,24 +9,23 @@ import (
 //Server mux -- Listado de rutas las cuales tienen asociadas acciones
 //Handlers -- acciones asociadas a las rutas (responder al cliente (cuerpo, encabezado, status))
 
-func Hola(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hola mundo desde mux DefaultServerMux")
+type User struct {
+	name string
 }
-func Hola2(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hola mundo desde mux propio")
+
+func (this *User) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hola: "+this.name)
 }
+
 func main() {
-	http.HandleFunc("/", Hola) //DefaultServerMux
+	didier := &User{name: "Didier"}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", Hola2)
-	mux.HandleFunc("/dos", func(writer http.ResponseWriter, request *http.Request) {
-		fmt.Fprintf(writer, "Hola mundo desde mux propio dos")
-	})
+	mux.Handle("/", didier)
 
 	server := &http.Server{
 		Addr:    "localhost:3000",
-		Handler: mux, //Si es nill utilizamos el DefaultServerMux
+		Handler: mux,
 	}
 
 	err := server.ListenAndServe()
