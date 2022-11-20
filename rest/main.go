@@ -2,6 +2,7 @@ package main
 
 import (
 	"GoWebTotal/rest/handlers"
+	"GoWebTotal/rest/models"
 	mux2 "github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -11,6 +12,8 @@ import (
 //Handlers -- acciones asociadas a las rutas (responder al cliente (cuerpo, encabezado, status))
 func main() {
 	mux := mux2.NewRouter()
+	models.SetDefaultUser()
+
 	mux.HandleFunc("/api/v1/users/", handlers.GetUsers).Methods("GET")
 	mux.HandleFunc("/api/v1/users/{id:[0-9]+}", handlers.GetUser).Methods("GET")
 	mux.HandleFunc("/api/v1/users/", handlers.CreateUser).Methods("POS")

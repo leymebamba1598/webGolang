@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"GoWebTotal/rest/models"
+	"encoding/json"
 	"fmt"
-	"gopkg.in/yaml.v3"
+	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
 )
 
 //Handlers -- acciones asociadas a las rutas (responder al cliente (cuerpo, encabezado, status))
@@ -14,9 +16,16 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	user := models.User{Id: 2, UserName: "Didier", Password: "23432"}
+	w.Header().Set("Content-Type", "application/json")
+	vars := mux.Vars(r)
+	userId, _ := strconv.Atoi(vars["id"]) //string
+	//user, err := models.GetUser(userId)
+	user, err := models.GetUserSlice(userId)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+	}
 
-	output, _ := yaml.Marshal(&user)
+	output, _ := json.Marshal(&user)
 	fmt.Fprintf(w, string(output))
 }
 
