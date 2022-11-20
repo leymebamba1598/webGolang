@@ -2,45 +2,31 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"log"
 	"net/http"
-	"net/url"
 )
 
-func createUrl() string {
-	u, err := url.Parse("/params")
-	if err != nil {
-		panic(err)
-	}
-	u.Host = "localhost:3000"
-	u.Scheme = "http"
+//Server mux -- Listado de rutas las cuales tienen asociadas acciones
+//Handlers -- acciones asociadas a las rutas (responder al cliente (cuerpo, encabezado, status))
 
-	query := u.Query() //Nos regresa un mapa
-	query.Add("nombre", "valor")
-
-	u.RawQuery = query.Encode()
-	return u.String()
+func Hola2(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hola mundo desde funcion")
 }
 func main() {
-	url := createUrl()
-	request, error := http.NewRequest("GET", url, nil)
-	if error != nil {
-		panic(error)
-	}
-	request.Header.Set("encbezado", "Valor")
-	client := &http.Client{}
 
-	response, err := client.Do(request)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("El header es", response.Header)
-	//Leer el body
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("El body es", string(body))
-	fmt.Println("El status es", response.Status)
+	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
+		fmt.Fprintf(writer, "Hola mundo")
+	})
+	http.HandleFunc("/hola2", Hola2) //DefaultServerMux
 
+	server := &http.Server{
+		Addr:    "localhost:3000",
+		Handler: nil, //Si es nill utilizamos el DefaultServerMux
+	}
+
+	err := server.ListenAndServe()
+
+	if err != nil {
+		log.Fatal("Error", err)
+	}
 }
