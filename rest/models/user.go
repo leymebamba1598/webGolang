@@ -1,7 +1,7 @@
 package models
 
 type User struct {
-	Id       int    `xml:"id"`
-	UserName string `xml:"username"`
-	Password string `xml:"password"`
+	Id       int    `yaml:"id"`
+	UserName string `yaml:"username"`
+	Password string `yaml:"password"`
 }

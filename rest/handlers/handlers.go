@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"GoWebTotal/rest/models"
-	"encoding/xml"
 	"fmt"
+	"gopkg.in/yaml.v3"
 	"net/http"
 )
 
@@ -14,10 +14,9 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/xml")
 	user := models.User{Id: 2, UserName: "Didier", Password: "23432"}
 
-	output, _ := xml.Marshal(&user)
+	output, _ := yaml.Marshal(&user)
 	fmt.Fprintf(w, string(output))
 }
 
