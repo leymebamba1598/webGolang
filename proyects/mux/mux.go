@@ -1,8 +1,6 @@
-package main
+package mux
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 )
 
@@ -16,18 +14,17 @@ type MuxFacilito struct {
 }
 
 func (this *MuxFacilito) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fn := this.rutasFaciitas[r.URL.Path]
-	fn(w, r)
+	if fn, ok := this.rutasFaciitas[r.URL.Path]; ok {
+		fn(w, r)
+	} else {
+		http.NotFound(w, r)
+	}
+
 }
 func (this *MuxFacilito) AddMux(ruta string, fn customHandelers) {
 	this.rutasFaciitas[ruta] = fn
 }
-func main() {
+func CreateMux() *MuxFacilito {
 	newMapa := make(map[string]customHandelers)
-	mux := &MuxFacilito{rutasFaciitas: newMapa}
-
-	mux.AddMux("/Hola", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hola desde funcion anonima")
-	})
-	log.Fatal(http.ListenAndServe("localhost:3000", mux))
+	return &MuxFacilito{newMapa}
 }
