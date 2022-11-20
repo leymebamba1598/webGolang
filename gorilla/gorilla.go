@@ -12,16 +12,14 @@ import (
 
 func YourHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	nombre := vars["nombre"]
-	edad := vars["edad"]
+	id := vars["id"]
 
-	fmt.Fprintf(w, "Los parametros son "+nombre+" "+edad)
+	fmt.Fprintf(w, "Los parametros son "+id)
 }
 
 func main() {
 	r := mux.NewRouter()
-	// Routes consist of a path and a handler function.
-	r.HandleFunc("/didier/{nombre}/{edad:[0-9]+}", YourHandler)
+	r.HandleFunc("/user/{id:[0-9]+}", YourHandler).Methods("GET", "DELETE")
 
 	// Bind to a port and pass our router in
 	log.Fatal(http.ListenAndServe(":3000", r))
