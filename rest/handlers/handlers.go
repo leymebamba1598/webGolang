@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"GoWebTotal/rest/models"
-	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -16,11 +15,11 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+
 	vars := mux.Vars(r)
 	userId, _ := strconv.Atoi(vars["id"]) //string
 	//user, err := models.GetUser(userId)
-	response := models.GetDefaultResponse()
+	response := models.GetDefaultResponse(w)
 	user, err := models.GetUserSlice(userId)
 
 	if err != nil {
@@ -28,10 +27,10 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		response.NotFound("usuario no encontrado")
 	} else {
 		response.Data = user
+		response.Message = "Usuario traido correctamente"
 	}
 
-	output, _ := json.Marshal(&response)
-	fmt.Fprintf(w, string(output))
+	response.Send()
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
