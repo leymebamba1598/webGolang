@@ -86,3 +86,20 @@ func UpdateUserSlice(user User, id int) User {
 
 	return user
 }
+
+//Eliminar usuario
+func DeleteUser(id int) {
+	delete(users, id)
+}
+func DeleteUserSlice(id int) []User {
+	for index, user := range listUser {
+		if user.Id == id {
+			listUser = append(listUser[:index], listUser[index+1:]...)
+		}
+	}
+	if len(listUser) > 0 {
+		return listUser
+	}
+	return nil
+
+}

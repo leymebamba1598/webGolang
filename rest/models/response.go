@@ -18,7 +18,7 @@ func CreateDefaultResponse(w http.ResponseWriter) Response {
 	return Response{Status: http.StatusOK, writer: w, contentType: "application/json"}
 }
 
-//Metodos de la structura Response
+//-----------------------------TODO METODOS STRUCT RESPONSE -----------------------------//
 
 //Envia respuesta si el usuario no existe
 func (this *Response) NotFound() {
@@ -30,6 +30,10 @@ func (this *Response) UnprocessableEntity() {
 	this.Status = http.StatusUnprocessableEntity
 	this.Message = "UnprocessableEntity"
 }
+func (this *Response) NotContent() {
+	this.Status = http.StatusNoContent
+	this.Message = "No contente"
+}
 
 //Envia la respuesta al cliente
 func (this *Response) Send() {
@@ -40,12 +44,16 @@ func (this *Response) Send() {
 	fmt.Fprintf(this.writer, string(output))
 
 }
+
+//-----------------------------TODO FUNCIONES -----------------------------//
+//datos validos
 func SendData(w http.ResponseWriter, data interface{}) {
 	response := CreateDefaultResponse(w)
 	response.Data = data
 	response.Send()
 }
 
+// Cuando no se encuntra
 func SendNotFound(w http.ResponseWriter) {
 	response := CreateDefaultResponse(w)
 	response.NotFound()
@@ -56,5 +64,11 @@ func SendNotFound(w http.ResponseWriter) {
 func SendUnprocesableEntity(w http.ResponseWriter) {
 	response := CreateDefaultResponse(w)
 	response.UnprocessableEntity()
+	response.Send()
+}
+
+func SendNoContent(w http.ResponseWriter) {
+	response := CreateDefaultResponse(w)
+	response.NotContent()
 	response.Send()
 }

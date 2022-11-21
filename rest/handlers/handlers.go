@@ -3,7 +3,6 @@ package handlers
 import (
 	"GoWebTotal/rest/models"
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
@@ -56,7 +55,15 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Se elimina un usuario")
+	user, err := getUserByRequest(r)
+	if err != nil {
+		models.SendNotFound(w)
+		return
+
+	}
+	models.DeleteUserSlice(user.Id)
+	//models.SendData(w, models.DeleteUserSlice(user.Id))
+	models.SendNoContent(w)
 }
 
 func getUserByRequest(r *http.Request) (models.User, error) {
