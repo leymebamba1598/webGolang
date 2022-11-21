@@ -16,7 +16,7 @@ func main() {
 
 	mux.HandleFunc("/api/v1/users/", handlers.GetUsers).Methods("GET")
 	mux.HandleFunc("/api/v1/users/{id:[0-9]+}", handlers.GetUser).Methods("GET")
-	mux.HandleFunc("/api/v1/users/", handlers.CreateUser).Methods("POS")
+	mux.HandleFunc("/api/v1/users/", handlers.CreateUser).Methods("POST")
 	mux.HandleFunc("/api/v1/users/{id:[0-9]+}", handlers.UpdateUser).Methods("PUT")
 	mux.HandleFunc("/api/v1/users/{id:[0-9]+}", handlers.DeleteUser).Methods(http.MethodDelete)
 

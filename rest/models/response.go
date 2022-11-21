@@ -26,12 +26,17 @@ func (this *Response) NotFound() {
 	this.Message = "Resource not found"
 }
 
+func (this *Response) UnprocessableEntity() {
+	this.Status = http.StatusUnprocessableEntity
+	this.Message = "UnprocessableEntity"
+}
+
 //Envia la respuesta al cliente
 func (this *Response) Send() {
 	this.writer.Header().Set("Content-Type", this.contentType)
 	this.writer.WriteHeader(this.Status)
 
-	output, _ := json.Marshal(&this)
+	output, _ := json.Marshal(&this) // Convierte e json
 	fmt.Fprintf(this.writer, string(output))
 
 }
@@ -44,5 +49,12 @@ func SendData(w http.ResponseWriter, data interface{}) {
 func SendNotFound(w http.ResponseWriter) {
 	response := CreateDefaultResponse(w)
 	response.NotFound()
+	response.Send()
+}
+
+// Cuando no se puede mapear el json
+func SendUnprocesableEntity(w http.ResponseWriter) {
+	response := CreateDefaultResponse(w)
+	response.UnprocessableEntity()
 	response.Send()
 }
