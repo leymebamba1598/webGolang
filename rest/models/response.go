@@ -14,17 +14,16 @@ type Response struct {
 	writer      http.ResponseWriter
 }
 
-func GetDefaultResponse(w http.ResponseWriter) Response {
+func CreateDefaultResponse(w http.ResponseWriter) Response {
 	return Response{Status: http.StatusOK, writer: w, contentType: "application/json"}
 }
 
 //Metodos de la structura Response
 
 //Envia respuesta si el usuario no existe
-func (this *Response) NotFound(message string) {
+func (this *Response) NotFound() {
 	this.Status = http.StatusNotFound
-	this.Data = nil
-	this.Message = message
+	this.Message = "Resource not found"
 }
 
 //Envia la respuesta al cliente
@@ -35,4 +34,15 @@ func (this *Response) Send() {
 	output, _ := json.Marshal(&this)
 	fmt.Fprintf(this.writer, string(output))
 
+}
+func SendData(w http.ResponseWriter, data interface{}) {
+	response := CreateDefaultResponse(w)
+	response.Data = data
+	response.Send()
+}
+
+func SendNotFound(w http.ResponseWriter) {
+	response := CreateDefaultResponse(w)
+	response.NotFound()
+	response.Send()
 }

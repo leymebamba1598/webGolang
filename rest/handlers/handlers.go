@@ -15,22 +15,15 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-
 	vars := mux.Vars(r)
 	userId, _ := strconv.Atoi(vars["id"]) //string
-	//user, err := models.GetUser(userId)
-	response := models.GetDefaultResponse(w)
-	user, err := models.GetUserSlice(userId)
 
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		response.NotFound("usuario no encontrado")
+	if user, err := models.GetUserSlice(userId); err != nil {
+		models.SendNotFound(w)
 	} else {
-		response.Data = user
-		response.Message = "Usuario traido correctamente"
+		models.SendData(w, user)
 	}
 
-	response.Send()
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
